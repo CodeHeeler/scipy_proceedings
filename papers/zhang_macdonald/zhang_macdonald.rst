@@ -3,11 +3,11 @@
 :equal-contributor:
 :bibliography: mybib
 
+
 :author: Austin Macdonald
 :email: austin@redhat.com
 :institution: Red Hat
 :equal-contributor:
-
 
 
 --------------------------------------------------
@@ -29,6 +29,7 @@ Reproducible Environments for Reproducible Results
 
    dependency-hell, reproducibility
 
+
 Introduction
 ============
 
@@ -38,7 +39,6 @@ on external code. “An article […] in a scientific publication is not the
 scholarship itself, it is merely advertising of the scholarship. The actual
 scholarship is the complete software development environment and the complete
 set of instructions which generated the figures”(Buckheit, Emphasis Added).
-
 
 Fortunately, this is a common problem and there are a number of best practices
 and tools that can make this easier. A common solution for high level dependencies
@@ -58,17 +58,30 @@ This paper seeks to explore several different methods at managing environmental
 reproducibility, and introduces Pulp as a tool to manage different packages.
 
 
+
 Measuring Reproducibility
 =========================
 
 Tools
 =====
 
-Zip n Ship
-----------
+Published Source Code
+---------------------
+
+Scholarly research containing descriptions of methodology is no longer sufficient.
+For standalone scripts, publishing source code might be acceptable, But as computational systems grow more complex,
+this method becomes more unreliable. Nontrivial research oftentimes depend on other external libraries for everything from left-padding
+a line, to building scalable machine learning. This "has led to an ever larger and more complex
+black box between what was actually done and what is described in literature." [Boettinger An intro to docker for reproducible research]
+
+Publishing source code in papers can also lead to code rot- bugs fixed after publication
+cannot be communicated to the readers of the paper. Code is not versioned and even if the source code is updated and
+made available it is hard to communicate what issues were fixed.
 
 Github
 ------
+
+Github is
 
 Python
 ------
@@ -79,14 +92,20 @@ Ansible
 Docker
 ------
 
-Management
-==========
+Multi Environmental Management
+==============================
 
-Tool Specific
--------------
+Pulp
+----
 
-Tool Agnostic
--------------
+Artifactory
+-----------
+
+Summary
+=======
+
+Acknowledgements
+================
 
 
 References
