@@ -106,6 +106,39 @@ Python
 Ansible
 -------
 
+Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced tasks [ansible website]
+With ansible it is possible to install python dependencies and system dependencies.
+
+With ansible you write an ansible playbook that executes a set of tasks. Each task is idempotent.
+
+
+.. code-block:: yaml
+
+   - name: Install python3-virtualenvwrapper (Fedora)
+     package:
+     name:
+       - which
+       - python3-virtualenvwrapper
+     when:
+       - pulp_venv is defined
+       - ansible_distribution == 'Fedora'
+
+   - name: Create a virtualenv
+     command: 'python3 -m venv my_venv'
+     args:
+       creates: 'my_venv'
+     register: result
+
+   - pip:
+     name: scipy
+     version: 1.1.0
+
+   - dnf:
+
+Ansible is only as good as your playbook. To make your environment reproducible, your playbook has to follow best practices like
+pinning packages to a version. A default host OS also should be specified when the playbook is written: ansible uses separate plugins
+to install system dependencies, and to be multiplatform the researcher needs to do some ansible host checking to use the right plugins.
+
 Containers
 ----------
 OCI
