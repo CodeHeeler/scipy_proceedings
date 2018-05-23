@@ -55,12 +55,23 @@ content can be modified or removed making it difficult or impossible to
 guarantee reproducibility.
 
 This paper seeks to explore several different methods at managing environmental
-reproducibility, and introduces Pulp as a tool to manage different packages.
-
+reproducibility, and introduces Pulp as a manager for various environments.
 
 
 Measuring Reproducibility
 =========================
+
+Two factors have to be considered when we think about reproducibility.
+
+Complete reproducibility is having the researcher and reviewer share identical 'bits' of the necessary system, program, and dependencies.
+
+Vandewalle identifies several necessity for complete reproducibility [Vandewalle]: the program's source code,
+package dependencies, system requirements and configuration, data source used, and documentation on running the provided the source code.
+
+On the other side one must determine if these programs and environments are flexible to change. Software moves fast, and even widely used programs become
+legacy and eventually deprecated. Pinning dependencies might accelerate this process.
+
+A good tool, and management system will balance complete reproducibility and code rot.
 
 Tools
 =====
@@ -74,14 +85,20 @@ this method becomes more unreliable. Nontrivial research oftentimes depend on ot
 a line, to building scalable machine learning. This "has led to an ever larger and more complex
 black box between what was actually done and what is described in literature." [Boettinger An intro to docker for reproducible research]
 
-Publishing source code in papers can also lead to code rot- bugs fixed after publication
+Publishing source code in papers makes them inflexible to change- bugs fixed after publication
 cannot be communicated to the readers of the paper. Code is not versioned and even if the source code is updated and
 made available it is hard to communicate what issues were fixed.
 
-Github
-------
+Git
+----
 
-Github is
+Using an online git repository is a great way to keep track of source code [Good Enough Practices for Scientific Computing].
+With git you can easily track changes you make to data and software. Git identifies commits by a unique hash, which can be used
+to reference a specific point in the source code.
+
+What git lacks is the ability to do environmental management.
+Git is not a package manager. System dependencies in git can only be documented- and need the user to install them following instructions.
+It is recommended that git be used to store the source code, and that some other package manager be used to manage the system environment.
 
 Python
 ------
@@ -89,8 +106,12 @@ Python
 Ansible
 -------
 
-Docker
-------
+Containers
+----------
+OCI
+
+
+
 
 Multi Environmental Management
 ==============================
