@@ -6,6 +6,7 @@
 :email: austin@redhat.com
 :institution: Red Hat
 
+:bibliography: mybib
 
 --------------------------------------------------
 Reproducible Environments for Reproducible Results
@@ -35,7 +36,7 @@ not sufficient for complete reproducibility. Complex programs often depend on
 external code. “An article […] in a scientific publication is not the
 scholarship itself, it is merely advertising of the scholarship. The actual
 scholarship is the complete software development environment and the complete
-set of instructions which generated the figures”(Buckheit, Emphasis Added).
+set of instructions which generated the figures” :cite:`Buckheit` .
 
 Fortunately, this is a common problem and there are a number of best practices
 and tools that can make this easier. A common solution for high level
@@ -75,7 +76,7 @@ legacy and eventually deprecated. Pinning dependencies might accelerate this
 process.
 
 A good tool, and management system will balance complete reproducibility and
-code entrophy.
+code entropy.
 
 Tools
 =====
@@ -140,14 +141,14 @@ stakes are simply too high. At this point, users can “pin” their versions.
 
 pip can use [requirements
 files](https://pip.readthedocs.io/en/1.1/requirements.html) to achieve more
-stability. Creating a requirements file in this way specifies the exact version
+stability. Creating a requirements.txt file in this way specifies the exact version
 of each dependency.
 
 .. code-block:: bash
 
    numpy==1.14.3 scipy==1.1.0
 
-The requirements file can now be used to recreate the same environment using
+The requirements.txt file can now be used to recreate the same environment using
 the same versions.
 
 .. code-block:: bash
@@ -156,10 +157,10 @@ the same versions.
    (separate-env) $ pip install -r scipy-requirements.txt
 
 For Python users who need to guarantee deterministic builds, another step is
-suggested. Adding hashes to a requirements file provides the guarantee that the
+suggested. Adding hashes to a requirements.txt file provides the guarantee that the
 exact bits are installed. PyPI now supports SHA-256, which is strongly
 recommended over MD5, the latter having known vulnerabilities. pip can be used to
-calculate the hashes, which are then added to the requirements file.
+calculate the hashes, which are then added to the requirements.txt file.
 
 .. code-block:: bash
 
@@ -174,9 +175,9 @@ calculate the hashes, which are then added to the requirements file.
    ./numpy-1.14.3-cp27-cp27mu-manylinux1_x86_64.whl:
    --hash=sha256:0db6301324d0568089663ef2701ad90ebac0e975742c97460e89366692bd0563
 
-Add these hashes to your requirements file, and use the `--require-hashes`
-option. Note that these files are specific to architecture and python type. For
-code that should run in more than one environment, multiple hashes can be
+Add these hashes to your requirements.txt file, and use the `--require-hashes`
+option. Note that these files are specific to architecture and python package type.
+For code that should run in more than one environment, multiple hashes can be
 specified.
 
 .. code-block:: bash
@@ -215,9 +216,9 @@ Ansible is an IT automation tool. It can configure systems, deploy software,
 and orchestrate more advanced tasks [ansible website]. With Ansible it is
 possible to install python dependencies and system dependencies.
 
-The approach is characterized by scripting, rather than documenting, a
+"The approach is characterized by scripting, rather than documenting, a
 description of the necessary dependencies for software to run, usually from the
-Operating System [...] on up” [Clark berkley’s common scientific compute
+Operating System [...] on up" [Clark berkley’s common scientific compute
 environments for research and education]
 
 
@@ -272,10 +273,10 @@ Applied to the scienctific field this means that each container will contain
 an image of your system, a copy of your source code, installed dependencies,
 and data used. These are stored in a static file called an image.
 
-This image can be given to peer reviewers and other collaborators as a baseline
-to run your research. However the image itself is opaque, and it is hard to tell
-what dependencies have been installed on the image without a lot of inspection.
-It is recommended that the image is built from a Dockerfile for full transparency.
+This Image can be given to peer reviewers and other collaborators as a baseline
+to run your research. However the Image itself is opaque, and it is hard to tell
+what dependencies have been installed on the image without substantial inspection.
+It is recommended that the Image is built from a Dockerfile for full transparency.
 
 A Dockerfile is a text document that contains all the commands a user could call
 on the command line to assemble an image [https://docs.docker.com/engine/reference/builder/].
@@ -285,20 +286,19 @@ This example dockerfile creates an Ubuntu image and installs SciPy and NumPy on 
 .. code-block:: text
 
    FROM ubuntu:16.04
-   RUN pip --no-cache-dir install scipy numpy
+   RUN pip install scipy --hash=sha256:0db6301324d0568089663ef2701ad90ebac0e975742c97460e89366692bd0563
 
 
 An Dockerfile can be built by running
 
 .. code-block:: bash
 
-   docker run
+   docker build
 
 
 Note that while the Docker image is immutable, running `docker build` on the
-same Dockerfile does not guarantee an identical image. If SciPy has been
-updated since the image was last built, the 2nd-built image will have a newer
-version of SciPy.
+same Dockerfile does not guarantee an identical image, unless best practices
+were followed.
 
 Dockerfiles can be kept in GitHub, and linked to DockerHub so that the
 image is rebuilt with every change to the Dockerfile. This is the best of both
@@ -306,8 +306,8 @@ worlds- an immutable image is managed by DockerHub, but documentation on how
 that image was built is kept under version control.
 
 DockerHub identifies images by their digest, so the chance of collision is low.
-Sharing a DockerHub managed image can be done by providing your docker repository,
-a tag, and the digest.
+Sharing a DockerHub managed image can be done by providing your docker repository
+and a digest.
 
 .. code-block:: bash
 
@@ -315,20 +315,43 @@ a tag, and the digest.
 
 
 The downside of Docker Images is that docker is high in entropy. The Docker
-Engine has no long-term support verion [https://github.com/moby/moby/issues/20424].
+Engine has no long-term support version [https://github.com/moby/moby/issues/20424].
 This could result in `docker load` suddenly not working [https://github.com/moby/moby/issues/20380]
 after upgrading system docker to a later version.
 
 
 
-Multi-Environmental Management
-==============================
+
+Environmental Management
+
+No matter with which tool you are working with, even if you follow the best
+practices- referencing packages with hashes, you are at the mercy of the
+upstream repository. Packages are user managed and exist on 3rd party platforms, content can be modified or removed making it difficult
+or impossible to guarantee reproducibility. The only way to guarantee reproducibility is to create and host your own repositories.
+
+Given all these tools one needs to manage, it would be more efficient to do so from a centralized place.
+It is a lot easier to learn one tool, rather than a tool for each content type. With one t
+package management is inherently complicated. Each content type handles the complexities in a different way- usually tools
+are built and optimized for a single content type. Context switching between these tools consume human RAM cycles.
+
 
 Pulp
 ----
 
-Artifactory
------------
+Pulp is an open source repository manager [2]_ that can be used to create immutable computational
+environments that can be easily verified and shared. With Pulp you can host and manage multiple
+PyPI-like instances, each containing your packages and their dependencies. Every repository is
+versioned, and each version is guaranteed to be immutable, so you can give your collaborators
+and reviewers access to an unchanging snapshot. 
+
+How Pulp can help you (sample workflows)
+    Preserving an environment for peer reviewers and future reproducers
+    In-house mirror for low bandwidth research stations
+    Vetting external dependencies
+    Advanced steps: manage your containerized environment
+    Advanced steps: manage your ansible roles
+Demo of basic Pulp upload and publish workflow
+
 
 Summary
 =======
@@ -355,3 +378,5 @@ References
     implementations. While most of the ideas discussed here will be generic
     across containers, the Docker container, and DockerHub will be used as
     examples, due largely in part to their popularity.
+
+.. [2] There are several closed sourced
