@@ -41,8 +41,9 @@ scholarship is the complete software development environment and the complete
 set of instructions which generated the figures”(Buckheit, Emphasis Added).
 
 Fortunately, this is a common problem and there are a number of best practices
-and tools that can make this easier. A common solution for high level dependencies
-is to explicitly “pin” them (Wilson). In python this would be running
+and tools that can make this easier. A common solution for high level
+dependencies is to explicitly “pin” them (Wilson). In python this would be
+running
 
 .. code-block:: bash
 
@@ -63,10 +64,12 @@ Measuring Reproducibility
 
 Two factors have to be considered when we think about reproducibility.
 
-Complete reproducibility is having the researcher and reviewer share identical 'bits' of the necessary system, program, and dependencies.
+Complete reproducibility is having the researcher and reviewer share identical
+'bits' of the necessary system, program, and dependencies.
 
-Vandewalle identifies several necessity for complete reproducibility [Vandewalle]: the program's source code,
-package dependencies, system requirements and configuration, data source used, and documentation on running the provided the source code.
+Vandewalle identifies several necessity for complete reproducibility [Vandewalle]:
+the program's source code, package dependencies, system requirements and
+configuration, data source used, and documentation on running the provided the source code.
 
 On the other side one must determine if these programs and environments are flexible to change. Software moves fast, and even widely used programs become
 legacy and eventually deprecated. Pinning dependencies might accelerate this process.
@@ -109,7 +112,7 @@ Ansible
 Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced tasks [ansible website]
 With ansible it is possible to install python dependencies and system dependencies.
 
-“The approach is characterized by scripting, rather than documenting, a description of the necessary dependencies for software to run, usually from the Operating System [...] on up” [Clark berkley’s common scientific compute environments for research and education]
+The approach is characterized by scripting, rather than documenting, a description of the necessary dependencies for software to run, usually from the Operating System [...] on up” [Clark berkley’s common scientific compute environments for research and education]
 
 
 With ansible you write an ansible playbook that executes a set of tasks. Each task is idempotent.
@@ -138,6 +141,7 @@ With ansible you write an ansible playbook that executes a set of tasks. Each ta
 
    - dnf:
 
+
 Ansible is only as good as your playbook. To make your environment reproducible, your playbook has to follow best practices like
 pinning packages to a version. A default host OS also should be specified when the playbook is written: ansible uses separate plugins
 to install system dependencies, and to be multiplatform the researcher needs to do some ansible host checking to use the right plugins.
@@ -159,11 +163,10 @@ This is not a problem to immutable images- docker keeps track of each image with
 
 This example dockerfile creates an ubuntu image and installs tensorflow on it.
 
-.. code-block::
+.. code-block:: text
 
    FROM ubuntu:16.04
-   RUN pip --no-cache-dir install \
-           tensorflow
+   RUN pip --no-cache-dir install tensorflow
 
 
 Note that while the Docker image is immutable, running `docker build` on the same Dockerfile does not gurantee an identical image. If tensorflow has been updated
@@ -176,6 +179,7 @@ Once this image is built it can be pushed to DockerHub with
    docker build
    docker push
 
+
 and shared with 3rd parties by providing them with the image id/hash and having them run:
 
 
@@ -183,7 +187,11 @@ and shared with 3rd parties by providing them with the image id/hash and having 
 
    docker pull
 
-Docker used to have a save to disk function, however that has been some issues with its deprecation inthe past.
+
+Docker used to have a save to disk function, however that has been some issues with its deprecation in the past. Onereason
+to use OCIcojntgainers instead of docker isaoaffuture proof
+
+Docker is not concerned wiht breaking older specifciations; docker save
 
 * Footnote: Most often people think of docker containers when the word container is mentioned. Docker is the most well known, however docker schema, and standards are not well documented.
 Containers in this case can refer to Linux Container which is a superset of Docker Containers, Rkt, LXC, and other implementations. While most of the ideas discussed
@@ -205,11 +213,5 @@ Summary
 Acknowledgements
 ================
 
-
 References
 ==========
-
-.. [Atr03] P. Atreides. *How to catch a sandworm*,
-           Transactions on Terraforming, 21(3):261-300, August 2003.
-
-
