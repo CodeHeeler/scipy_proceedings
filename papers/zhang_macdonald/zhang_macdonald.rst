@@ -109,6 +109,9 @@ Ansible
 Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced tasks [ansible website]
 With ansible it is possible to install python dependencies and system dependencies.
 
+“The approach is characterized by scripting, rather than documenting, a description of the necessary dependencies for software to run, usually from the Operating System [...] on up” [Clark berkley’s common scientific compute environments for research and education]
+
+
 With ansible you write an ansible playbook that executes a set of tasks. Each task is idempotent.
 
 
@@ -141,9 +144,50 @@ to install system dependencies, and to be multiplatform the researcher needs to 
 
 Containers
 ----------
-OCI
+
+Containers* are a great way to publish and share a virtualized image of your system, source code, and data.
+
+A Docker Image (a snapshot of a filesystem that is inert) can be passed to users through the centralized DockerHub. This image can contain
+all system dependencies, a pre setup environment, and the source files and instructions.
+
+It is recommended that a Dockerfile is used to create this image; while images can be created interatively through docker scripting tools, this process leaves little record
+of what went into creating the image.
+
+This Dockerfile can be kept in github, and linked to DockerHub so that the image is rebuilt with every change to the Dockerfile.
+
+This is not a problem to immutable images- docker keeps track of each image with a hash, a publication should be referenced with the hash to make sure the correct version is obtained.
+
+This example dockerfile creates an ubuntu image and installs tensorflow on it.
+
+.. code-block::
+
+   FROM ubuntu:16.04
+   RUN pip --no-cache-dir install \
+           tensorflow
 
 
+Note that while the Docker image is immutable, running `docker build` on the same Dockerfile does not gurantee an identical image. If tensorflow has been updated
+since, the 2nd built image will have a newer version of tensorflow.
+
+Once this image is built it can be pushed to DockerHub with
+
+.. code-block:: bash
+
+   docker build
+   docker push
+
+and shared with 3rd parties by providing them with the image id/hash and having them run:
+
+
+.. code-block:: bash
+
+   docker pull
+
+Docker used to have a save to disk function, however that has been some issues with its deprecation inthe past.
+
+* Footnote: Most often people think of docker containers when the word container is mentioned. Docker is the most well known, however docker schema, and standards are not well documented.
+Containers in this case can refer to Linux Container which is a superset of Docker Containers, Rkt, LXC, and other implementations. While most of the ideas discussed
+ here will be generic across containers, the Docker Container, and DockerHub will be uesd as examples, due largely in part to their popularity.
 
 
 Multi Environmental Management
