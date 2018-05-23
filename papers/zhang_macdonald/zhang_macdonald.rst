@@ -52,25 +52,25 @@ because these resources are user managed and exist on 3rd party platforms,
 content can be modified or removed making it difficult or impossible to
 guarantee reproducibility.
 
-This paper seeks to explore several different methods at managing environmental
+This paper seeks to explore several different methods of managing environmental
 reproducibility, and introduces Pulp as a manager for various environments.
 
 
 Measuring Reproducibility
 =========================
 
-Two factors have to be considered when we think about reproducibility.
+Two somewhat opposing factors have to be considered when we think about reproducibility.
 
-Complete reproducibility is having the researcher and reviewer share identical
+One factor is complete reproducibility which is having the researcher and reviewer share identical
 'bits' of the necessary system, program, and dependencies.
 
-Vandewalle identifies several necessity for complete reproducibility
-[Vandewalle]: the program's source code, package dependencies, system
+Vandewalle identifies several necessities for complete reproducibility
+[Vandewalle], namely the program's source code, package dependencies, system
 requirements and configuration, data source used, and documentation on running
-the provided the source code.
+the provided source code.
 
-On the other side one must determine if these programs and environments are
-flexible to change. Software moves fast, and even widely used programs become
+On the other hand one must determine if these programs and environments are
+flexible to accomodate change. Software moves fast, and even widely used programs become
 legacy and eventually deprecated. Pinning dependencies might accelerate this
 process.
 
@@ -85,8 +85,8 @@ Published Source Code
 
 Scholarly research containing descriptions of methodology is no longer
 sufficient.  For standalone scripts, publishing source code might be
-acceptable, But as computational systems grow more complex, this method becomes
-more unreliable. Nontrivial research oftentimes depend on other external
+acceptable, but as computational systems grow more complex, this method becomes
+more unreliable. Nontrivial research oftentimes depends on other external
 libraries for everything from left-padding a line, to building scalable machine
 learning. This "has led to an ever larger and more complex black box between
 what was actually done and what is described in literature." [Boettinger An
@@ -97,17 +97,17 @@ after publication cannot be communicated to the readers of the paper. Code is
 not versioned and even if the source code is updated and made available it is
 hard to communicate what issues were fixed.
 
-Github and Other Version Control Software
+GitHub and Other Version Control Software
 -----------------------------------------
 
-Using an online git repository is a great way to keep track of source code
-[Good Enough Practices for Scientific Computing].  With git you can easily
+Using an online Git repository, such as GitHub, is a great way to keep track of source code
+[Good Enough Practices for Scientific Computing].  With Git you can easily
 track changes you make to data and software. Git identifies commits by a unique
 hash, which can be used to reference a specific point in the source code.
 
-What git lacks is the ability to do environmental management.  Git is not a
-package manager. System dependencies in git can only be documented- and need
-the user to install them following instructions.  It is recommended that git be
+What Git lacks is the ability to do environmental management.  Git is not a
+package manager. System dependencies in Git can only be documented and need
+the user to install them following instructions.  It is recommended that GitHub be
 used to store the source code, and that some other package manager be used to
 manage the system environment.
 
@@ -115,11 +115,11 @@ Python Packaging
 ----------------
 
 Python has a strong community, and many libraries and tools are hosted on the
-Python Package Index.  Currently, the standard tool for installing packages is
+Python Package Index (PyPI).  Currently, the standard tool for installing packages is
 [pip](https://pip.pypa.io/en/stable/), which installs Python packages and their
 Python dependencies. For development, it is strongly recommended to use pip
 with virtual environments [0]_. Doing so will allow the developed
-projects to use the newest stable versions of their dependencies, and well
+projects to use the newest stable versions of their dependencies, and well-
 maintained dependencies should work correctly together.
 
 .. code-block:: bash
@@ -128,9 +128,9 @@ maintained dependencies should work correctly together.
    $ pip install scipy
 
 After development is complete and analysis begins, the need for reproducibility
-overtakes the for keeping dependencies up to date. Though many projects strive
+overtakes the need for keeping dependencies up to date. Though many projects strive
 to maintain backwards compatibility, a researcher would not want to use
-numpy-1.13.1 for part of their analysis and numpy-1.14.2 for another, the
+numpy-1.13.1 for part of their analysis and numpy-1.14.2 for another; the
 stakes are simply too high. At this point, users can “pin” their versions.
 
 .. code-block:: bash
@@ -138,7 +138,7 @@ stakes are simply too high. At this point, users can “pin” their versions.
    $ workon venv-demo (venv-demo)
    $ pip freeze > scipy-requirements.txt
 
-Pip can use [requirements
+pip can use [requirements
 files](https://pip.readthedocs.io/en/1.1/requirements.html) to achieve more
 stability. Creating a requirements file in this way specifies the exact version
 of each dependency.
@@ -156,9 +156,9 @@ the same versions.
    (separate-env) $ pip install -r scipy-requirements.txt
 
 For Python users who need to guarantee deterministic builds, another step is
-suggested. Adding hashes to a requirements.txt provides the guarantee that the
-exact bits are installed. PyPI now supports sha256, which is strongly
-recommended over md5, which has known vulnerabilities. Pip can be used to
+suggested. Adding hashes to a requirements file provides the guarantee that the
+exact bits are installed. PyPI now supports SHA-256, which is strongly
+recommended over MD5, the latter having known vulnerabilities. pip can be used to
 calculate the hashes, which are then added to the requirements file.
 
 .. code-block:: bash
@@ -191,17 +191,17 @@ specified.
    $ mkvirtualenv deterministic-venv (deterministic-venv) $ pip install --require-hashes -r
    scipy_requirements.txt
 
-Guarantees:
- - All Python dependencies installed this way will contain exactly the same
-   bits
- - Hashes safeguard against man in the middle attacks
- - Hashes safeguard against malicious modification of packages on PyPI
+Utilizing this strategy guarantees that all Python dependencies installed this
+way will contain exactly the same bits, hashes safeguard against man in the 
+middle attacks, and hashes safeguard against malicious modification of packages
+on PyPI.
 
-Limitations: Packages on PyPI can be removed at any time by their maintainer.
-pip is only useful for managing python dependencies, and cannot be used for
-system dependencies and environment configuration.
+There are limitations introduced with these methods. Packages on PyPI can be
+removed at any time by their maintainer. pip is only useful for managing python
+dependencies, and cannot be used for system dependencies and environment
+configuration.
 
-Pip was selected because it is the standard tool, and it is most likely to
+pip was selected because it is the standard tool, and it is most likely to
 maintain backward compatibility. However, there are other tools with rich
 feature sets that simplify the process. In particular,
 [pipenv](https://docs.pipenv.org/) uses hashing and virtual environments by
@@ -212,7 +212,7 @@ Ansible
 -------
 
 Ansible is an IT automation tool. It can configure systems, deploy software,
-and orchestrate more advanced tasks [ansible website] With ansible it is
+and orchestrate more advanced tasks [ansible website]. With Ansible it is
 possible to install python dependencies and system dependencies.
 
 The approach is characterized by scripting, rather than documenting, a
@@ -221,7 +221,7 @@ Operating System [...] on up” [Clark berkley’s common scientific compute
 environments for research and education]
 
 
-With ansible you write an ansible playbook that executes a set of tasks. Each
+With Ansible you write an Ansible playbook that executes a set of tasks. Each
 task is idempotent.
 
 
@@ -252,15 +252,15 @@ task is idempotent.
 Ansible is only as good as your playbook. To make your environment
 reproducible, your playbook has to follow best practices like pinning packages
 to a version. A default host OS also should be specified when the playbook is
-written: ansible uses separate plugins to install system dependencies, and to
-be multiplatform the researcher needs to do some ansible host checking to use
+written: Ansible uses separate plugins to install system dependencies, and to
+be multiplatform the researcher needs to do some Ansible host checking to use
 the right plugins.
 
-Ansible playbook and roles are yaml files that can be called with:
+Ansible playbooks and roles are YAML files that can be called with:
 
 .. code-block:: bash
 
-    ansible-playbook playbook.yml
+    ansible-playbook playbook.yaml
 
 Containers
 ----------
@@ -270,17 +270,17 @@ applications with their entire runtime environment—all of the files
 necessary to run." [https://www.redhat.com/en/topics/containers]
 Applied to the scienctific field this means that each container will contain
 an image of your system, a copy of your source code, installed dependencies,
-and data used. These are stored in a static file called an Image.
+and data used. These are stored in a static file called an image.
 
-This Image can be given to peer reviewers and other collaborators as a baseline
-to run your research. However the Image itself is opaque, and it is hard to tell
-what dependencies have been installed on the image without a lot of introspection.
-It is recommended that the Image is built from a Dockerfile for full transparency.
+This image can be given to peer reviewers and other collaborators as a baseline
+to run your research. However the image itself is opaque, and it is hard to tell
+what dependencies have been installed on the image without a lot of inspection.
+It is recommended that the image is built from a Dockerfile for full transparency.
 
 A Dockerfile is a text document that contains all the commands a user could call
 on the command line to assemble an image [https://docs.docker.com/engine/reference/builder/].
 
-This example dockerfile creates an ubuntu image and installs scipy and numpy on it.
+This example dockerfile creates an Ubuntu image and installs SciPy and NumPy on it.
 
 .. code-block:: text
 
@@ -296,31 +296,32 @@ An Dockerfile can be built by running
 
 
 Note that while the Docker image is immutable, running `docker build` on the
-same Dockerfile does not guarantee an identical image. If scipy has been
-updated since, the 2nd built image will have a newer version of scipy.
+same Dockerfile does not guarantee an identical image. If SciPy has been
+updated since the image was last built, the 2nd-built image will have a newer
+version of SciPy.
 
-Dockerfiles can be kept in github, and linked to DockerHub so that the
+Dockerfiles can be kept in GitHub, and linked to DockerHub so that the
 image is rebuilt with every change to the Dockerfile. This is the best of both
 worlds- an immutable image is managed by DockerHub, but documentation on how
 that image was built is kept under version control.
 
 DockerHub identifies images by their digest, so the chance of collision is low.
-Sharing a DockerHub managed image can be done by providing your docker repository
-and a tag and digest
+Sharing a DockerHub managed image can be done by providing your docker repository,
+a tag, and the digest.
 
 .. code-block:: bash
 
     docker pull internal-registry/my-project@sha256:b2ea388fdbabb22f10f2e9ecccaccf9efc3a11fbd987cf299c79825a65b62751
 
 
-The downside of Docker Images is that docker is high in entrophy. The Docker
+The downside of Docker Images is that docker is high in entropy. The Docker
 Engine has no long-term support verion [https://github.com/moby/moby/issues/20424].
 This could result in `docker load` suddenly not working [https://github.com/moby/moby/issues/20380]
 after upgrading system docker to a later version.
 
 
 
-Multi Environmental Management
+Multi-Environmental Management
 ==============================
 
 Pulp
@@ -347,10 +348,10 @@ References
     privileges and are safer to use.
 
 
-.. [1] Most often people think of docker containers when the word
-    container is mentioned. Docker is the most well known, however docker schema,
+.. [1] Most often people think of Docker containers when the word
+    container is mentioned. Docker is the most well known, however Docker schema,
     and standards are not well documented.  Containers in this case can refer to
     Linux Container which is a superset of Docker Containers, Rkt, LXC, and other
     implementations. While most of the ideas discussed here will be generic
-    across containers, the docker container, and DockerHub will be used as
+    across containers, the Docker container, and DockerHub will be used as
     examples, due largely in part to their popularity.
