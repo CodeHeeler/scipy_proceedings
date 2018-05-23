@@ -321,14 +321,38 @@ after upgrading system docker to a later version.
 
 
 
-Multi Environmental Management
-==============================
+Environmental Management
+========================
+
+No matter with which tool you are working with, even if you follow the best
+practices- referencing packages with hashes, you are at the mercy of the
+upstream repository. Packages are user managed and exist on 3rd party platforms, content can be modified or removed making it difficult
+or impossible to guarantee reproducibility. The only way to guarantee reproducibility is to create and host your own repositories.
+
+Given all these tools one needs to manage, it would be more efficient to do so from a centralized place.
+It is a lot easier to learn one tool, rather than a tool for each content type. With one t
+package management is inherently complicated. Each content type handles the complexities in a different way- usually tools
+are built and optimized for a single content type. Context switching between these tools consume human RAM cycles.
+
+
 
 Pulp
 ----
 
-Artifactory
------------
+Pulp is an open source repository manager [2]_ that can be used to create immutable computational
+environments that can be easily verified and shared. With Pulp you can host and manage multiple
+PyPI-like instances, each containing your packages and their dependencies. Every repository is
+versioned, and each version is guaranteed to be immutable, so you can give your collaborators
+and reviewers access to an unchanging snapshot. 
+
+How Pulp can help you (sample workflows)
+    Preserving an environment for peer reviewers and future reproducers
+    In-house mirror for low bandwidth research stations
+    Vetting external dependencies
+    Advanced steps: manage your containerized environment
+    Advanced steps: manage your ansible roles
+Demo of basic Pulp upload and publish workflow
+
 
 Summary
 =======
@@ -355,3 +379,5 @@ References
     implementations. While most of the ideas discussed here will be generic
     across containers, the docker container, and DockerHub will be used as
     examples, due largely in part to their popularity.
+
+.. [2] There are several closed sourced
