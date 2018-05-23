@@ -6,6 +6,7 @@
 :email: austin@redhat.com
 :institution: Red Hat
 
+:bibliography: mybib
 
 --------------------------------------------------
 Reproducible Environments for Reproducible Results
@@ -35,7 +36,7 @@ not sufficient for complete reproducibility. Complex programs often depend on
 external code. “An article […] in a scientific publication is not the
 scholarship itself, it is merely advertising of the scholarship. The actual
 scholarship is the complete software development environment and the complete
-set of instructions which generated the figures”(Buckheit, Emphasis Added).
+set of instructions which generated the figures” :cite:`Buckheit` .
 
 Fortunately, this is a common problem and there are a number of best practices
 and tools that can make this easier. A common solution for high level
@@ -52,7 +53,7 @@ because these resources are user managed and exist on 3rd party platforms,
 content can be modified or removed making it difficult or impossible to
 guarantee reproducibility.
 
-This paper seeks to explore several different methods at managing environmental
+This paper seeks to explore several different methods of managing environmental
 reproducibility, and introduces Pulp as a manager for various environments.
 
 
@@ -64,7 +65,7 @@ Two factors have to be considered when we think about reproducibility.
 Complete reproducibility is having the researcher and reviewer share identical
 'bits' of the necessary system, program, and dependencies.
 
-Vandewalle identifies several necessity for complete reproducibility
+Vandewalle identifies several necessities for complete reproducibility
 [Vandewalle]: the program's source code, package dependencies, system
 requirements and configuration, data source used, and documentation on running
 the provided the source code.
@@ -75,7 +76,7 @@ legacy and eventually deprecated. Pinning dependencies might accelerate this
 process.
 
 A good tool, and management system will balance complete reproducibility and
-code entrophy.
+code entropy.
 
 Tools
 =====
@@ -128,7 +129,7 @@ maintained dependencies should work correctly together.
    $ pip install scipy
 
 After development is complete and analysis begins, the need for reproducibility
-overtakes the for keeping dependencies up to date. Though many projects strive
+overtakes the need for keeping dependencies up to date. Though many projects strive
 to maintain backwards compatibility, a researcher would not want to use
 numpy-1.13.1 for part of their analysis and numpy-1.14.2 for another, the
 stakes are simply too high. At this point, users can “pin” their versions.
@@ -175,8 +176,8 @@ calculate the hashes, which are then added to the requirements file.
    --hash=sha256:0db6301324d0568089663ef2701ad90ebac0e975742c97460e89366692bd0563
 
 Add these hashes to your requirements file, and use the `--require-hashes`
-option. Note that these files are specific to architecture and python type. For
-code that should run in more than one environment, multiple hashes can be
+option. Note that these files are specific to architecture and python package type.
+For code that should run in more than one environment, multiple hashes can be
 specified.
 
 .. code-block:: bash
@@ -215,9 +216,9 @@ Ansible is an IT automation tool. It can configure systems, deploy software,
 and orchestrate more advanced tasks [ansible website] With ansible it is
 possible to install python dependencies and system dependencies.
 
-The approach is characterized by scripting, rather than documenting, a
+"The approach is characterized by scripting, rather than documenting, a
 description of the necessary dependencies for software to run, usually from the
-Operating System [...] on up” [Clark berkley’s common scientific compute
+Operating System [...] on up" [Clark berkley’s common scientific compute
 environments for research and education]
 
 
@@ -274,7 +275,7 @@ and data used. These are stored in a static file called an Image.
 
 This Image can be given to peer reviewers and other collaborators as a baseline
 to run your research. However the Image itself is opaque, and it is hard to tell
-what dependencies have been installed on the image without a lot of introspection.
+what dependencies have been installed on the image without substantial inspection.
 It is recommended that the Image is built from a Dockerfile for full transparency.
 
 A Dockerfile is a text document that contains all the commands a user could call
@@ -285,19 +286,19 @@ This example dockerfile creates an ubuntu image and installs scipy and numpy on 
 .. code-block:: text
 
    FROM ubuntu:16.04
-   RUN pip --no-cache-dir install scipy numpy
+   RUN pip install scipy --hash=sha256:0db6301324d0568089663ef2701ad90ebac0e975742c97460e89366692bd0563
 
 
 An Dockerfile can be built by running
 
 .. code-block:: bash
 
-   docker run
+   docker build
 
 
 Note that while the Docker image is immutable, running `docker build` on the
-same Dockerfile does not guarantee an identical image. If scipy has been
-updated since, the 2nd built image will have a newer version of scipy.
+same Dockerfile does not guarantee an identical image, unless best practices
+were followed.
 
 Dockerfiles can be kept in github, and linked to DockerHub so that the
 image is rebuilt with every change to the Dockerfile. This is the best of both
@@ -306,15 +307,15 @@ that image was built is kept under version control.
 
 DockerHub identifies images by their digest, so the chance of collision is low.
 Sharing a DockerHub managed image can be done by providing your docker repository
-and a tag and digest
+and a digest.
 
 .. code-block:: bash
 
     docker pull internal-registry/my-project@sha256:b2ea388fdbabb22f10f2e9ecccaccf9efc3a11fbd987cf299c79825a65b62751
 
 
-The downside of Docker Images is that docker is high in entrophy. The Docker
-Engine has no long-term support verion [https://github.com/moby/moby/issues/20424].
+The downside of Docker Images is that docker is high in entropy. The Docker
+Engine has no long-term support version [https://github.com/moby/moby/issues/20424].
 This could result in `docker load` suddenly not working [https://github.com/moby/moby/issues/20380]
 after upgrading system docker to a later version.
 
